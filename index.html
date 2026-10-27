@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>三角形全等與相似・互動教室</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F2F6FA;--ink:#14213D;--mute:#5A6B80;--line:#D5E0EA;--A:#1769AA;--B:#F0A202;--ok:#1E8E5A;--bad:#C0392B;--ang:#8E3B8C}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Noto Sans TC",system-ui,"PingFang TC","Microsoft JhengHei",sans-serif;color:var(--ink);background:var(--bg)}
+header{background:var(--ink);color:#fff}
+header .in{max-width:1100px;margin:0 auto;padding:12px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+[hidden]{display:none!important}
+h1{font-size:21px;margin:0;font-weight:700;cursor:pointer}
+.home h2{font-size:22px;margin:8px 0 16px}
+.entries{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.entry{display:flex;flex-direction:column;align-items:flex-start;gap:8px;text-align:left;min-height:190px;padding:20px;border:2px solid var(--line);border-left:10px solid var(--c);border-radius:16px;background:#fff}
+.entry small{color:var(--mute);font-size:14px}.entry b{font-size:22px}.entry span{color:var(--mute);line-height:1.6;font-size:15px}
+h3{font-size:15px;margin:0;color:var(--mute);font-weight:700}
+nav{display:flex;gap:4px;background:rgba(255,255,255,.12);padding:5px;border-radius:99px}
+main{max-width:1100px;margin:0 auto;padding:16px 18px 40px}
+button,select,input[type=text]{font:inherit;color:var(--ink)}
+button{min-height:50px;padding:0 16px;border:2px solid var(--line);border-radius:12px;background:#fff;cursor:pointer;font-weight:500}
+button:hover{border-color:var(--ink)}
+button.on{background:var(--ink);border-color:var(--ink);color:#fff}
+button:disabled{opacity:.4}
+button.main{background:var(--B);border-color:var(--B);font-weight:700;width:100%}
+button.ghost{background:transparent;border-color:transparent;color:var(--mute);width:100%}
+button.ghost:hover{border-color:var(--line)}
+nav button{border:0;border-radius:99px;background:transparent;color:#fff;min-height:44px;padding:0 18px}
+nav button:hover{background:rgba(255,255,255,.16)}
+nav button.on{background:#fff;color:var(--ink)}
+button:focus-visible,.card:focus-visible{outline:3px solid var(--B);outline-offset:2px}
+.work{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:16px;align-items:start}
+@media(max-width:820px){.work{grid-template-columns:1fr}}
+.stagebox,.side,.panel{background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px}
+.side{display:flex;flex-direction:column;gap:14px;padding:16px}
+.blk{display:flex;flex-direction:column;gap:8px}
+.blk+.blk{border-top:1px solid var(--line);padding-top:14px}
+.stage{width:100%;display:block;border-radius:12px;background:#FBFDFF;touch-action:none}
+.seg{display:flex}
+.seg button{flex:1;border-radius:0;margin-left:-2px;padding:0 6px}
+.seg button:first-child{border-radius:12px 0 0 12px;margin-left:0}
+.seg button:last-child{border-radius:0 12px 12px 0}
+.seg.wrap{flex-wrap:wrap;gap:6px}
+.seg.wrap button{border-radius:12px;margin:0;flex:1 0 28%}
+#sa.on{background:var(--A);border-color:var(--A)}
+#sb.on{background:var(--B);border-color:var(--B);color:var(--ink)}
+.row{display:flex;gap:8px}.row button{flex:1;padding:0 4px}
+.sl{display:flex;flex-direction:column;gap:2px;font-weight:500}
+.sl b{float:right}
+input[type=range]{width:100%;height:36px;accent-color:var(--ink)}
+.chk{display:flex;gap:10px;align-items:center;min-height:40px}.chk input{width:22px;height:22px}
+.msg{padding:10px 12px;border-radius:12px;background:#EEF3F8;line-height:1.7;min-height:56px;font-size:15px}
+.msg.ok{background:#DDF1E5}.msg.bad{background:#F8E1DD}
+.hint{color:var(--mute);font-size:14px;margin:8px 2px 0;line-height:1.6}
+.score{text-align:center;color:var(--mute);font-weight:500}
+.bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:8px 0}
+.pill{padding:6px 12px;border-radius:99px;background:#EEF3F8;font-weight:500}
+svg text{paint-order:stroke;stroke:#fff;stroke-width:3.5px;stroke-linejoin:round;pointer-events:none;fill:var(--ink)}
+svg text.side{font-weight:700}svg text.ang{fill:var(--ang);font-weight:500}svg text.tag{font-weight:700;fill:var(--mute)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:10px}
+.card{position:relative;border:3px solid var(--line);border-radius:12px;background:#fff;cursor:pointer}
+.card svg{display:block;width:100%}
+.card.sel{border-color:var(--ink);box-shadow:0 0 0 3px var(--B)}
+.card.done{cursor:default;opacity:.85}
+.card .tg{position:absolute;top:4px;left:8px;font-size:13px;font-weight:700}
+.shake{animation:sh .3s}
+@keyframes sh{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+@media(prefers-reduced-motion:reduce){.shake{animation:none}}
+table{border-collapse:collapse;width:100%}td,th{padding:8px;border-bottom:1px solid var(--line);text-align:left}
+input[type=text],select{height:50px;border:2px solid var(--line);border-radius:12px;padding:0 12px;background:#fff}
+.story{line-height:1.9;font-size:17px;margin:10px 2px}.q{font-size:18px;margin:8px 2px;font-weight:700}.st{margin:0;font-size:20px}
+.opts{display:flex;flex-direction:column;gap:8px}.opts button{text-align:left;padding:10px 14px}
+.un{font-weight:500;white-space:nowrap}input[type=number]{flex:1;min-width:0;height:50px;border:2px solid var(--line);border-radius:12px;padding:0 12px;font:inherit;font-size:18px}
+</style>
+</head>
+<body>
+<header><div class="in">
+  <h1>三角形全等與相似・互動教室</h1>
+  <nav id="tabs" hidden>
+    <button data-m="home">首頁</button>
+    <button data-m="ex">動手疊合</button>
+    <button data-m="jd">用邊與角判斷</button>
+    <button data-m="gm">配對競賽</button>
+    <button data-m="sc">情境題</button>
+  </nav></div></header>
+<main id="view"></main>
+<script>
+const $=s=>document.querySelector(s),NS='http://www.w3.org/2000/svg',D=Math.PI/180,U=30;
+const rnd=(a,b)=>a+Math.floor(Math.random()*(b-a+1)),pick=a=>a[rnd(0,a.length-1)];
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=rnd(0,i);[a[i],a[j]]=[a[j],a[i]]}return a};
+const fmt=v=>Number.isInteger(v)?v:+v.toFixed(1);
+const gcd=(a,b)=>b?gcd(b,a%b):a;
+const sig=s=>{const t=[...s].sort((x,y)=>x-y),g=gcd(gcd(t[0],t[1]),t[2]);return t.map(x=>x/g).join(':')};
+function el(t,a,p){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e}
+function text(p,x,y,t,c,fs){const e=el('text',{x,y,class:c,'font-size':fs,'text-anchor':'middle','dominant-baseline':'central'},p);e.textContent=t;return e}
+
+/* ---------- 幾何 ---------- */
+// 第 i 條邊連接頂點 i 與 i+1；第 i 個角在頂點 i
+const pts=s=>{const[a,b,c]=s,x=(a*a+c*c-b*b)/(2*a),y=Math.sqrt(Math.max(c*c-x*x,0));return[[0,0],[a,0],[x,y]]};
+const angs=s=>[0,1,2].map(i=>{const p=s[(i+2)%3],q=s[i],r=s[(i+1)%3];return Math.acos((p*p+q*q-r*r)/(2*p*q))/D});
+const valid=s=>s[0]+s[1]>s[2]&&s[1]+s[2]>s[0]&&s[0]+s[2]>s[1];
+function randTri(lo,hi){for(;;){const s=[rnd(lo,hi),rnd(lo,hi),rnd(lo,hi)];if(!valid(s)||new Set(s).size<2)continue;const a=angs(s);if(Math.min(...a)<25||Math.max(...a)>115)continue;return s}}
+function rel(a,b){const x=[...a].sort((p,q)=>p-q),y=[...b].sort((p,q)=>p-q);if(x.every((v,i)=>v===y[i]))return'全等';const r=y[0]/x[0];return x.every((v,i)=>Math.abs(v*r-y[i])<1e-6)?'相似':'無'}
+const cent=P=>[0,1].map(i=>(P[0][i]+P[1][i]+P[2][i])/3);
+
+function labels(svg,P,L,A,sd,ag,fs){
+  const c=cent(P);
+  sd.forEach(i=>{const a=P[i],b=P[(i+1)%3],mx=(a[0]+b[0])/2,my=(a[1]+b[1])/2,dx=mx-c[0],dy=my-c[1],d=Math.hypot(dx,dy)||1;text(svg,mx+dx/d*(fs+3),my+dy/d*(fs+3),fmt(L[i]),'side',fs)});
+  ag.forEach(i=>{const v=P[i],dx=c[0]-v[0],dy=c[1]-v[1],d=Math.hypot(dx,dy)||1;text(svg,v[0]+dx/d*fs*2.3,v[1]+dy/d*fs*2.3,Math.round(A[i])+'°','ang',fs)})
+}
+// 畫一個固定的三角形（不可拖曳），只標示指定的邊與角
+function figure(svg,s,o){
+  const k=o.size/Math.max(...s),r=o.rot*D;
+  let P=pts(s).map(([x,y])=>[(o.mir?-x:x)*k,y*k]).map(([x,y])=>[x*Math.cos(r)-y*Math.sin(r),x*Math.sin(r)+y*Math.cos(r)]);
+  const xs=P.map(p=>p[0]),ys=P.map(p=>p[1]),ox=o.cx-(Math.min(...xs)+Math.max(...xs))/2,oy=o.cy-(Math.min(...ys)+Math.max(...ys))/2;
+  P=P.map(([x,y])=>[x+ox,y+oy]);
+  el('polygon',{points:P.join(' '),fill:o.col,'fill-opacity':.28,stroke:o.col,'stroke-width':3,'stroke-linejoin':'round'},svg);
+  labels(svg,P,s,angs(s),o.sd||[],o.ag||[],o.fs)
+}
+
+/* ---------- 切換頁籤 ---------- */
+let mode,timer;
+function go(m){clearInterval(timer);mode=m;$('#tabs').hidden=false;document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.m===m));({ex:viewEx,jd:viewJd,gm:viewGm,sc:viewSc})[m]()}
+function home(){
+  clearInterval(timer);mode=null;$('#tabs').hidden=true;
+  $('#view').innerHTML=`<div class="home"><h2>今天要進行哪個環節？</h2><div class="entries">
+  <button class="entry" data-m="ex" style="--c:var(--A)"><b>動手疊合</b><span>移動、旋轉、縮放兩個三角形，自己判斷是全等、相似還是都不是。</span></button>
+  <button class="entry" data-m="jd" style="--c:var(--B)"><b>用邊與角判斷</b><span>三角形不能移動，只看邊長與角度，說出判別條件。</span></button>
+  <button class="entry" data-m="gm" style="--c:var(--ok)"><b>配對競賽</b><span>分組比賽，找出全等與相似的三角形，比誰又快又準。</span></button>
+  <button class="entry" data-m="sc" style="--c:var(--ang)"><b>情境題</b><span>測量旗桿、河寬、地圖比例……把全等與相似用在生活問題。</span></button>
+  </div></div>`;
+  document.querySelectorAll('.entry').forEach(b=>b.onclick=()=>go(b.dataset.m))
+}
+document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>b.dataset.m==='home'?home():go(b.dataset.m));
+$('h1').onclick=home;
+
+/* ========== 模式一：動手疊合 ========== */
+let ex=null,drag=null;
+const mkT=(s,x,col,rot,flip)=>{const P=pts(s).map(([a,b])=>[a*U,b*U]),c=cent(P);return{s,loc:P.map(([a,b])=>[a-c[0],b-c[1]]),x,y:260,rot,flip,sc:1,col}};
+function newEx(){
+  const truth=pick(['全等','相似','都不是']),base=randTri(3,5);let sB=base;
+  if(truth==='相似')sB=base.map(x=>x*2);
+  if(truth==='都不是')do{sB=randTri(3,6)}while(rel(base,sB)!=='無');
+  ex={A:mkT(base,230,'#1B6CA8',pick([0,15,30]),1),B:mkT(sB,570,'#D98E00',rnd(2,22)*15,pick([1,-1])),sel:'B',truth,pred:null,nums:ex?ex.nums:false};
+  ex.init=JSON.stringify([ex.A,ex.B])
+}
+const W=t=>t.loc.map(([x,y])=>{x*=t.flip*t.sc;y*=t.sc;const r=t.rot*D;return[t.x+x*Math.cos(r)-y*Math.sin(r),t.y+x*Math.sin(r)+y*Math.cos(r)]});
+function viewEx(){
+  if(!ex)newEx();
+  $('#view').innerHTML=`<div class="work"><section class="stagebox">
+  <svg id="exsvg" class="stage" viewBox="0 0 800 520"></svg>
+  <p class="hint">拖曳三角形可以移動，用手指按住三角形的角再轉動，可以旋轉，也可以用按鈕轉 15° 或翻轉。不能縮放。軟體不會告訴你答案，請自己觀察、比較邊與角，再做出判斷。方格每格 1 單位。</p></section>
+  <aside class="side">
+  <div class="blk"><h3>選取</h3><div class="seg"><button id="sa">甲（藍）</button><button id="sb">乙（黃）</button></div></div>
+  <div class="blk"><h3>操作</h3><div class="row"><button id="rl">↺ 15°</button><button id="rr">↻ 15°</button><button id="fl">翻轉</button></div>
+  <label class="chk"><input type="checkbox" id="nums"> 顯示邊長與角度</label>
+  <button id="rs" class="ghost">回到起點</button></div>
+  <div class="blk"><h3>我的判斷</h3><div class="seg"><button class="pr">全等</button><button class="pr">相似</button><button class="pr">都不是</button></div>
+  <button id="vf" class="main">驗證答案</button><button id="nw" class="ghost">新題目</button></div>
+  <div class="msg" id="msg">先動手試試看，再做出你的判斷。</div></aside></div>`;
+  const svg=$('#exsvg');
+  $('#nums').checked=ex.nums;$('#nums').onchange=e=>{ex.nums=e.target.checked;drawEx()};
+  $('#rl').onclick=()=>{ex[ex.sel].rot-=15;drawEx()};
+  $('#rr').onclick=()=>{ex[ex.sel].rot+=15;drawEx()};
+  $('#fl').onclick=()=>{ex[ex.sel].flip*=-1;drawEx()};
+  document.querySelectorAll('.pr').forEach(b=>{b.onclick=()=>{ex.pred=b.textContent;drawEx()}});
+  $('#vf').onclick=()=>{
+    if(!ex.pred)return say('先選一個預測，再來驗證。');
+    const ok=ex.pred===ex.truth,k=Math.max(...ex.B.s)/Math.max(...ex.A.s);
+    const why={全等:'對應邊都相等、對應角都相等，可以完全疊合。',相似:`對應角都相等，對應邊成比例（乙：甲＝${fmt(k)}：1），形狀相同但大小不同，所以只靠移動、旋轉、翻轉無法完全疊合。`,都不是:'邊長既不相等、也不成比例，怎麼移動都無法疊合。'}[ex.truth];
+    say((ok?'答對了！':'這次的預測不太對。')+'這一組是「'+ex.truth+'」。'+why,ok?'ok':'bad')
+  };
+  $('#rs').onclick=()=>{const[a,b]=JSON.parse(ex.init);ex.A=a;ex.B=b;drawEx()};
+  $('#nw').onclick=()=>{newEx();viewEx()};
+  $('#sa').onclick=()=>{ex.sel='A';drawEx()};$('#sb').onclick=()=>{ex.sel='B';drawEx()};
+  const pt=e=>{const b=svg.getBoundingClientRect();return[(e.clientX-b.left)*800/b.width,(e.clientY-b.top)*520/b.height]};
+  svg.onpointerdown=e=>{
+    const q=pt(e);let hit=null;
+    for(const id of [ex.sel,ex.sel==='A'?'B':'A']){const i=W(ex[id]).findIndex(v=>Math.hypot(v[0]-q[0],v[1]-q[1])<26);if(i>=0){hit={id,i};break}}
+    const g=e.target.closest('g[data-id]');
+    if(!hit&&!g)return;
+    ex.sel=hit?hit.id:g.dataset.id;drag={q,vi:hit?hit.i:-1};
+    svg.setPointerCapture(e.pointerId);drawEx()
+  };
+  svg.onpointermove=e=>{
+    if(!drag)return;const q=pt(e),t=ex[ex.sel];
+    if(drag.vi>=0){const v=W(t)[drag.vi];t.rot+=(Math.atan2(q[1]-t.y,q[0]-t.x)-Math.atan2(v[1]-t.y,v[0]-t.x))/D}
+    else{t.x=Math.min(780,Math.max(20,t.x+q[0]-drag.q[0]));t.y=Math.min(500,Math.max(20,t.y+q[1]-drag.q[1]))}
+    drag.q=q;drawEx()
+  };
+  svg.onpointerup=svg.onpointercancel=()=>{drag=null};
+  drawEx()
+}
+function say(t,c){const m=$('#msg');m.textContent=t;m.className='msg '+(c||'')}
+function drawEx(){
+  const svg=$('#exsvg');svg.innerHTML='';
+  el('path',{d:'M30 0H0V30',fill:'none',stroke:'#D5E0EA','stroke-width':1},el('pattern',{id:'gd',width:30,height:30,patternUnits:'userSpaceOnUse'},el('defs',{},svg)));
+  el('rect',{width:800,height:520,fill:'url(#gd)'},svg);
+  ['A','B'].forEach(id=>{
+    const t=ex[id],P=W(t),g=el('g',{'data-id':id,style:'cursor:grab'},svg);
+    el('polygon',{points:P.join(' '),fill:t.col,'fill-opacity':.35,stroke:t.col,'stroke-width':ex.sel===id?6:2.5,'stroke-linejoin':'round'},g);
+    if(ex.nums)labels(g,P,[0,1,2].map(i=>Math.hypot(P[(i+1)%3][0]-P[i][0],P[(i+1)%3][1]-P[i][1])/U),angs(t.s),[0,1,2],[0,1,2],13);
+    const c=cent(P);text(g,c[0],c[1],id==='A'?'甲':'乙','tag',18)
+  });
+  $('#sa').classList.toggle('on',ex.sel==='A');$('#sb').classList.toggle('on',ex.sel==='B');
+  document.querySelectorAll('.pr').forEach(b=>b.classList.toggle('on',b.textContent===ex.pred))
+}
+
+/* ========== 模式二：用邊與角判斷 ========== */
+const CR={
+  SSS:{t:'全等',s:[0,1,2],a:[],why:'三組對應邊都相等'},
+  SAS:{t:'全等',s:[0,1],a:[1],why:'兩組對應邊相等，且夾角相等'},
+  ASA:{t:'全等',s:[0],a:[0,1],why:'兩組對應角相等，且夾邊相等'},
+  AAS:{t:'全等',s:[1],a:[0,1],why:'兩組對應角相等，且其中一組非夾邊的對應邊相等'},
+  RHS:{t:'全等',s:[0,2],a:[1],why:'都是直角三角形，斜邊相等，且另一股也相等'},
+  AA:{t:'相似',s:[],a:[0,1],why:'兩組對應角相等'},
+  'SAS~':{t:'相似',s:[0,1],a:[1],why:'兩組對應邊成比例，且夾角相等'},
+  'SSS~':{t:'相似',s:[0,1,2],a:[],why:'三組對應邊成比例'},
+  N1:{t:'都不是',s:[0,1,2],a:[],why:'三組對應邊既不相等、也不成比例'},
+  N2:{t:'都不是',s:[],a:[0,1],why:'對應角不相等，形狀不同'}
+};
+const TRI=[[3,4,5],[5,12,13],[6,8,10],[8,15,17]];
+let jp=null,jt={ok:0,n:0},js={type:null,crit:null};
+const rot3=(s,r,g)=>({S:[0,1,2].map(i=>s[(i+r)%3]),s:g.s.map(j=>(j-r+3)%3),a:g.a.map(j=>(j-r+3)%3)});
+function newJd(){
+  for(;;){
+    const id=pick(Object.keys(CR)),c=CR[id],sim=c.t==='相似';
+    const base=id==='RHS'?pick(TRI):randTri(3,9);let sB=base.map(x=>x*(sim?pick([2,3]):1));
+    const ra=rnd(0,2),rb=rnd(0,2);
+    if(id==='N1')do{sB=base.map(x=>x+pick([-2,-1,0,1,2]))}while(!valid(sB)||rel(base,sB)!=='無');
+    if(id==='N2')sB=randTri(3,9);
+    const A=rot3(base,ra,c),B=rot3(sB,rb,c);
+    if(id==='N2'){const t=T=>{const a=angs(T.S),x=T.a.map(i=>Math.round(a[i]));return[...x,180-x[0]-x[1]].sort((p,q)=>p-q).join()};if(t(A)===t(B))continue}
+    jp={id,A,B,k:sim?sB[0]/base[0]:1};js={type:null,crit:null};return
+  }
+}
+function viewJd(){
+  if(!jp)newJd();
+  $('#view').innerHTML=`<div class="work"><section class="stagebox">
+  <svg id="jsvg" class="stage" viewBox="0 0 760 300"></svg>
+  <p class="hint">三角形不能移動，只看標出的邊長（黑）與角度（紫），圖形不一定按比例。若同時全等也相似，請選「全等」。</p></section>
+  <aside class="side">
+  <div class="blk"><h3>類型</h3><div class="seg"><button class="ty">全等</button><button class="ty">相似</button><button class="ty">都不是</button></div></div>
+  <div class="blk"><h3>判別條件</h3><div class="seg wrap" id="crb"></div></div>
+  <div class="blk"><button id="sm" class="main">送出答案</button><button id="nx" class="ghost">下一題</button><div class="score" id="tl"></div></div>
+  <div class="msg" id="msg">先看數據，再選答案。</div></aside></div>`;
+  const svg=$('#jsvg');
+  [[190,jp.A,'#1B6CA8','三角形甲'],[570,jp.B,'#D98E00','三角形乙']].forEach(([cx,T,col,nm],i)=>{
+    text(svg,cx,22,nm,'tag',17);
+    figure(svg,T.S,{cx,cy:160,size:i?170:150,rot:rnd(0,359),mir:Math.random()<.5,col,sd:T.s,ag:T.a,fs:16})
+  });
+  document.querySelectorAll('.ty').forEach(b=>b.onclick=()=>{js.type=b.textContent;js.crit=null;drawJd()});
+  $('#sm').onclick=submitJd;$('#nx').onclick=()=>{newJd();viewJd()};
+  drawJd()
+}
+function drawJd(){
+  document.querySelectorAll('.ty').forEach(b=>b.classList.toggle('on',b.textContent===js.type));
+  const list={全等:['SSS','SAS','ASA','AAS','RHS'],相似:['AA','SAS','SSS']}[js.type]||[];
+  const cb=$('#crb');cb.innerHTML=list.length?list.map(x=>`<button class="cr${js.crit===x?' on':''}">${x}</button>`)
+.join(''):'<span class="hint">選「全等」或「相似」後，這裡會出現判別條件。</span>';
+  cb.querySelectorAll('.cr').forEach(b=>b.onclick=()=>{js.crit=b.textContent;drawJd()});
+  $('#tl').textContent=`答對 ${jt.ok} / ${jt.n} 題`
+}
+function submitJd(){
+  if(!js.type)return say('先選類型。');
+  const c=CR[jp.id],base=jp.id.replace('~',''),acc=jp.id==='ASA'||jp.id==='AAS'?['ASA','AAS']:[base];
+  const k=jp.k>1?`（邊長比 ${fmt(jp.k)}：1）`:'';
+  if(js.type!==c.t){jt.n++;drawJd();return say(`再想想。這一題是「${c.t}」：${c.why}。${k}`,'bad')}
+  if(c.t!=='都不是'&&!acc.includes(js.crit)){if(!js.crit)return say('再選一個判別條件。');jt.n++;drawJd();return say(`類型對了，但條件不是 ${js.crit}。這題依據的是 ${acc.join(' 或 ')}：${c.why}。`,'bad')}
+  jt.n++;jt.ok++;drawJd();say(`答對了！${c.t==='都不是'?'':base+'：'}${c.why}。${k}`,'ok')
+}
+
+/* ========== 模式三：配對競賽 ========== */
+const LB='triGameBoard',PAL=['#1B6CA8','#D98E00','#2E8B57','#9A3C74','#C0392B','#5B6B7A','#7A5AF8','#0F9AA8'];
+const lb=()=>{try{return JSON.parse(localStorage[LB]||'[]')}catch(e){return[]}};
+const saveLb=r=>{try{const a=lb();a.push(r);a.sort((x,y)=>y.score-x.score||x.time-y.time);localStorage[LB]=JSON.stringify(a.slice(0,20))}catch(e){}};
+let g=null,gset={name:'',n:10};
+function viewGm(){
+  const rows=lb().slice(0,8).map((r,i)=>`<tr><td>${i+1}</td><td>${r.name.replace(/[<>&]/g,'')}</td><td>${r.score}</td><td>${r.time} 秒</td><td>${r.n} 張</td></tr>`).join('')||'<tr><td colspan="5" class="hint">還沒有成績。</td></tr>';
+  $('#view').innerHTML=`<div class="panel">
+  <p class="hint">規則：畫面上有多張三角形（含邊長與角度），每張都能和另一張配成「全等」或「相似」。點選兩張，再按下你的判斷。配對正確 +10 分，錯誤 −3 分；同時全等也相似時請選「全等」。分數高者勝，同分比時間。</p>
+  <div class="bar"><input type="text" id="nm" placeholder="組別名稱" maxlength="12" value="${gset.name}">
+  <select id="nn"><option value="10">10 張</option><option value="12">12 張</option><option value="16">16 張</option></select>
+  <button id="go">開始競賽</button></div>
+  <h3>本機排行榜</h3><table><tr><th>名次</th><th>組別</th><th>分數</th><th>時間</th><th>題數</th></tr>${rows}</table>
+  <div class="bar"><button id="clr">清除排行榜</button></div></div>`;
+  $('#nn').value=gset.n;
+  $('#go').onclick=()=>{gset.name=$('#nm').value.trim()||'未命名組';gset.n=+$('#nn').value;startGm()};
+  $('#clr').onclick=()=>{if(confirm('確定清除排行榜？')){try{delete localStorage[LB]}catch(e){}viewGm()}}
+}
+function deck(n){
+  const used=new Set(),cards=[];
+  for(let i=0;i<n/2;){
+    const cong=i%2===0,base=cong?randTri(3,9):randTri(2,6);
+    if(used.has(sig(base)))continue;used.add(sig(base));
+    const k=cong?1:pick([2,3]);
+    cards.push({s:base},{s:base.map(x=>x*k)});i++
+  }
+  return shuffle(cards).map(c=>({...c,rot:rnd(0,359),mir:Math.random()<.5}))
+}
+function startGm(){g={cards:deck(gset.n),sel:[],done:{},right:0,wrong:0,t0:Date.now(),fin:false};timer=setInterval(()=>{const c=$('#clock');if(c&&!g.fin)c.textContent=Math.floor((Date.now()-g.t0)/1000)+' 秒'},250);drawGm('')}
+function drawGm(m,cls){
+  const total=g.cards.length/2;
+  $('#view').innerHTML=`<div class="panel"><div class="bar"><b>${gset.name}</b><span class="pill" id="clock">0 秒</span>
+  <span class="pill">已配對 ${g.right} / ${total}</span><span class="pill">失誤 ${g.wrong}</span><button id="qt">放棄</button></div>
+  <div class="grid" id="grid"></div>
+  <div class="bar" id="act"></div><div class="msg ${cls||''}" id="msg">${m||'點選兩張三角形開始配對。'}</div></div>`;
+  const gr=$('#grid');
+  g.cards.forEach((c,i)=>{
+    const d=document.createElement('div'),dn=g.done[i];
+    d.className='card'+(g.sel.includes(i)?' sel':'')+(dn?' done':'');d.tabIndex=0;d.setAttribute('role','button');
+    if(dn)d.style.borderColor=PAL[dn.c%8];
+    const s=el('svg',{viewBox:'0 0 150 135'},d);
+    figure(s,c.s,{cx:75,cy:70,size:78,rot:c.rot,mir:c.mir,col:dn?PAL[dn.c%8]:'#5B6B7A',sd:[0,1,2],ag:[0,1,2],fs:11});
+    if(dn){const t=document.createElement('span');t.className='tg';t.style.color=PAL[dn.c%8];t.textContent=dn.t;d.appendChild(t)}
+    d.onclick=()=>pickCard(i);d.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pickCard(i)}};
+    gr.appendChild(d)
+  });
+  const ac=$('#act');
+  if(g.sel.length===2&&!g.fin){ac.innerHTML='<b>這一組是</b><button id="b1">全等</button><button id="b2">相似</button><button id="b3">取消選取</button>';$('#b1').onclick=()=>jg('全等');$('#b2').onclick=()=>jg('相似');$('#b3').onclick=()=>{g.sel=[];drawGm('')}}
+  $('#qt').onclick=()=>{clearInterval(timer);g=null;viewGm()}
+}
+function pickCard(i){
+  if(g.fin||g.done[i])return;
+  const k=g.sel.indexOf(i);
+  if(k>=0)g.sel.splice(k,1);else if(g.sel.length<2)g.sel.push(i);
+  drawGm('')
+}
+function jg(ans){
+  const[i,j]=g.sel,r=rel(g.cards[i].s,g.cards[j].s);
+  if(r===ans){g.done[i]=g.done[j]={c:g.right,t:ans};g.done[i]={c:g.right,t:ans};g.right++;g.sel=[];
+    if(g.right===g.cards.length/2)return endGm();
+    drawGm('配對成功！','ok')
+  }else{g.wrong++;g.sel=[];drawGm(r==='無'?'這兩張不能配成一組，再找找看。':'這兩張有關係，但類型不是這個。想想邊長是相等還是成比例。','bad');document.querySelector('.grid').classList.add('shake')}
+}
+function endGm(){
+  g.fin=true;clearInterval(timer);
+  const time=Math.round((Date.now()-g.t0)/1000),score=Math.max(0,g.right*10-g.wrong*3);
+  saveLb({name:gset.name,score,time,n:g.cards.length});
+  drawGm('','');
+  $('#msg').className='msg ok';
+  $('#msg').innerHTML=`<b>完成！</b>${gset.name}：用時 ${time} 秒，失誤 ${g.wrong} 次，得分 <b>${score}</b>。`;
+  $('#act').innerHTML='<button id="ag">再玩一次</button><button id="bk">看排行榜</button>';
+  $('#ag').onclick=startGm;$('#bk').onclick=viewGm
+}
+
+/* ========== 模式四：情境題 ========== */
+const SC=[
+()=>{const[h,t]=pick([[1.5,1],[1.6,2],[1.8,1.2],[1.2,0.8]]),n=rnd(4,10);return{t:'用影子量旗桿',x:`小安身高 ${h} 公尺，同一時間他的影子長 ${t} 公尺；旁邊旗桿的影子長 ${fmt(t*n)} 公尺。陽光角度相同，人與旗桿都垂直於地面。`,q:'旗桿高幾公尺？',a:h*n,u:'公尺',w:`人加影子、旗桿加影子，是兩個相似的直角三角形（AA），對應邊成比例：旗桿高 ÷ ${h} = ${fmt(t*n)} ÷ ${t}，所以旗桿高 ${fmt(h*n)} 公尺。`}},
+()=>{const N=pick([50000,100000,200000]),d=rnd(3,12),km=d*N/100000;return{t:'地圖比例尺',x:`一張地圖的比例尺是 1：${N}（地圖上 1 公分代表實際 ${N} 公分）。地圖上，學校到公園的直線距離是 ${d} 公分。`,q:'實際直線距離是幾公里？',a:km,u:'公里',w:`地圖與實際地形相似，圖上長度：實際長度 = 1：${N}。實際距離 = ${d} × ${N} = ${d*N} 公分 = ${fmt(km)} 公里。`}},
+()=>{const a=rnd(4,10)*2,p=pick([50,75,150,200]),b=a*p/100;return{t:'影印放大縮小',x:`講義上有一個三角形，最長邊是 ${a} 公分。影印機設定縮放比例 ${p}%，影印後的新三角形與原來的三角形形狀相同。`,q:'影印後，三角形的最長邊是幾公分？',a:b,u:'公分',w:`縮放比例 ${p}% 表示邊長比是 ${p}：100，所以新邊長 = ${a} × ${p} ÷ 100 = ${fmt(b)} 公分。`}},
+()=>{const b=pick([5,10]),m=rnd(2,4),c=rnd(4,9),a=m*b;return{t:'測量河寬',x:`站在岸邊 A 點，正對面的岸上有一棵樹 T（AT 垂直河岸）。沿河岸走 ${a} 公尺到 P 點，再走 ${b} 公尺到 Q 點；接著從 Q 垂直河岸、往遠離河的方向走，直到 P 點、樹 T 與自己在同一直線上，這時走了 ${c} 公尺。`,q:'河寬 AT 是幾公尺？',a:m*c,u:'公尺',w:`△TAP 與△RQP 有直角與對頂角兩組對應角相等（AA 相似），所以 AT ÷ QR = AP ÷ QP，AT = ${c} × ${a} ÷ ${b} = ${m*c} 公尺。`}},
+()=>{const y=rnd(30,80)*2;return{t:'風箏的骨架',x:`風箏骨架 ABCD 中，AB = AD，CB = CD，AC 是共同的一條骨架。已知 ∠BAD = ${y}°。`,q:'∠BAC 是幾度？',a:y/2,u:'度',w:`△ABC 與△ADC 三邊對應相等（SSS 全等），所以 ∠BAC = ∠DAC。兩角合起來是 ${y}°，因此 ∠BAC = ${y/2}°。`}},
+()=>{const a=rnd(8,20),b=rnd(8,20),x=rnd(15,45);return{t:'池塘的寬度',x:`池塘兩端是 A、B，在岸上選一點 O，量得 OA = ${a} 公尺、OB = ${b} 公尺。把 AO 延長到 C，使 OC = ${a} 公尺；把 BO 延長到 D，使 OD = ${b} 公尺。量得 CD = ${x} 公尺。`,q:'池塘寬度 AB 是幾公尺？',a:x,u:'公尺',w:`△AOB 與△COD 有 OA = OC、OB = OD，且對頂角 ∠AOB = ∠COD（SAS 全等），所以 AB = CD = ${x} 公尺。`}},
+()=>{const L=rnd(4,6),h=rnd(2,L-1);return{t:'靠牆的梯子',x:`兩面牆都垂直於地面。兩把梯子長度都是 ${L} 公尺，各自靠在一面牆上，梯頂離地面都是 ${h} 公尺。`,q:'兩把梯子與牆、地面形成的三角形，關係是什麼？',o:shuffle(['RHS 全等','SAS 全等','AA 相似，但不一定全等','無法判斷']),a:'RHS 全等',w:'兩個都是直角三角形，斜邊（梯子）相等，一股（梯頂高度）也相等，符合 RHS 全等。'}},
+()=>{const A=rnd(40,70),B=rnd(40,70),s=rnd(20,60);return{t:'三角形地磚',x:`工廠切出兩片三角形地磚。兩片都量得兩個角分別是 ${A}° 與 ${B}°，而且這兩角之間的邊長都是 ${s} 公分。`,q:'這兩片地磚是否全等？依據是什麼？',o:shuffle(['ASA 全等','SSS 全等','AA 相似，但不一定全等','SAS 全等']),a:'ASA 全等',w:'兩個角與它們的夾邊對應相等，符合 ASA 全等。只有 AA 只能確定相似，必須再加上一組邊相等才能全等。'}},
+()=>{const k=pick(['全等','相似但不全等','都不是']);let a=randTri(3,6),b;if(k==='全等')b=a;else if(k==='相似但不全等')b=a.map(x=>x*2);else do{b=randTri(3,8)}while(rel(a,b)!=='無');const rl=rel(a,b);return{t:'兩面三角旗',x:`班上做了兩面三角旗。第一面三邊長是 ${a.join('、')} 公分，第二面三邊長是 ${shuffle([...b]).join('、')} 公分。`,q:'兩面旗子的關係是什麼？',o:['全等','相似但不全等','都不是'],a:k,w:rl==='全等'?'三邊對應相等（SSS），所以全等。':rl==='相似'?'三組對應邊的比都是 1：2（SSS 相似），形狀相同但大小不同，所以相似但不全等。':'三組對應邊既不相等、也不成比例，所以兩者都不是。'}},
+()=>{const a=rnd(8,15),b=rnd(16,25),c=rnd(35,60);return{t:'鋼架的量測',x:`兩片三角形鋼板，量得 AB = DE = ${a} 公分，BC = EF = ${b} 公分，∠A = ∠D = ${c}°。（注意 ∠A 不是夾在 AB 與 BC 之間。）`,q:'可以確定兩片鋼板全等嗎？',o:shuffle(['可以，SAS 全等','可以，SSA 全等','無法確定是否全等','一定相似但不全等']),a:'無法確定是否全等',w:'已知的是兩邊與其中一邊的對角（SSA），並不是夾角，這種條件不能保證全等，因為可能畫出兩種不同的三角形。'}}
+];
+let sc=null,scs={ok:0,n:0},lastSc=-1;
+function newSc(){let i;do{i=rnd(0,SC.length-1)}while(i===lastSc);lastSc=i;sc={...SC[i](),sel:null,done:false}}
+function viewSc(){
+  if(!sc)newSc();
+  $('#view').innerHTML=`<div class="work"><section class="stagebox"><h2 class="st">${sc.t}</h2><p class="story">${sc.x}</p><p class="q">${sc.q}</p></section>
+  <aside class="side"><div class="blk"><h3>你的答案</h3>${sc.o?'<div class="opts">'+sc.o.map(o=>`<button class="op">${o}</button>`).join('')+'</div>':`<div class="row"><input type="number" id="av" step="any" inputmode="decimal" aria-label="答案"><span class="un">${sc.u}</span></div>`}</div>
+  <div class="blk"><button id="sm" class="main">送出答案</button><button id="nx" class="ghost">下一題</button><div class="score" id="tl"></div></div>
+  <div class="msg" id="msg">先讀題，想想要用全等還是相似。</div></aside></div>`;
+  document.querySelectorAll('.op').forEach(b=>b.onclick=()=>{if(sc.done)return;sc.sel=b.textContent;document.querySelectorAll('.op').forEach(x=>x.classList.toggle('on',x===b))});
+  $('#nx').onclick=()=>{newSc();viewSc()};
+  $('#sm').onclick=()=>{
+    if(sc.done)return;let ok;
+    if(sc.o){if(!sc.sel)return say('先選一個答案。');ok=sc.sel===sc.a}
+    else{const v=parseFloat($('#av').value);if(isNaN(v))return say('先輸入數字。');ok=Math.abs(v-sc.a)<0.01}
+    sc.done=true;scs.n++;if(ok)scs.ok++;
+    say((ok?'答對了！':'答案是 '+(sc.o?sc.a:fmt(sc.a)+' '+sc.u)+'。')+sc.w,ok?'ok':'bad');
+    $('#tl').textContent=`答對 ${scs.ok} / ${scs.n} 題`
+  };
+  $('#tl').textContent=scs.n?`答對 ${scs.ok} / ${scs.n} 題`:''
+}
+home();
+</script>
+</body>
+</html>
